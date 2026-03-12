@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="$FLUTTER_BASE_HREF">
+
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
+
+  <!-- iOS meta tags & icons -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="miner_clc">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
+
+  <title>miner_clc</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <!--
+    You can customize the "flutter_bootstrap.js" script.
+    This is useful to provide a custom configuration to the Flutter loader
+    or to give the user feedback during the initialization process.
+
+    For more details:
+    * https://docs.flutter.dev/platform-integration/web/initialization
+  -->
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
+.hbtn-red { background:var(--red2); color:white; }
+.hbtn-red:hover { background:var(--red); }
+
+.content-body { flex:1; overflow-y:auto; padding:16px 20px; }
+.content-body::-webkit-scrollbar { width:5px; }
+.content-body::-webkit-scrollbar-track { background:var(--bg3); }
+.content-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* STATUS BAR */
+.statusbar {
+  background: var(--bg4);
+  height: 22px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 16px;
+  border-top: 1px solid var(--border2);
+  flex-shrink: 0;
+}
+.status-item { font-size:10px; color:var(--muted); display:flex; align-items:center; gap:4px; }
+.status-dot { width:6px;height:6px;border-radius:50%; }
+
+/* SCREENS */
+.screen { display:none; animation:fadeIn 0.2s ease; }
+.screen.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+/* LOGIN SCREEN */
+.login-wrap {
+  display:flex; align-items:center; justify-content:center;
+  height:100%; padding:20px;
+}
+.login-box {
+  width:380px; background:var(--bg2); border:1px solid var(--border2);
+  border-radius:6px; padding:32px 28px;
+}
+.login-logo { text-align:center; margin-bottom:24px; }
+.login-logo .li { font-size:48px; }
+.login-logo h2 { font-family:'Rajdhani',sans-serif; font-size:26px; font-weight:700; color:var(--white); letter-spacing:3px; margin-top:6px; }
+.login-logo p { font-size:11px; color:var(--muted); }
+.fg { margin-bottom:14px; }
+.fg label { display:block; font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:5px; }
+.fg input {
+  width:100%; background:var(--bg3); border:1px solid var(--border2);
+  border-radius:3px; padding:8px 12px; color:var(--white);
+  font-family:'Exo 2',sans-serif; font-size:13px; outline:none;
+}
+.fg input:focus { border-color:var(--blue); }
+.fg input::placeholder { color:#555; }
+.login-btn {
+  width:100%; padding:10px; background:var(--btn); color:var(--white);
+  border:none; border-radius:3px; font-family:'Rajdhani',sans-serif;
+  font-size:16px; font-weight:700; letter-spacing:1px; cursor:pointer;
+  margin-top:6px; transition:background 0.15s;
+}
+.login-btn:hover { background:#333; }
+
+/* GRID CARDS */
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+.grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:14px; }
+.grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:14px; }
+
+.card { background:var(--bg2); border:1px solid var(--border2); border-radius:5px; padding:14px; }
+.card-title { font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:600; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:10px; }
+
+/* STAT CARDS */
+.stat-card { background:var(--bg2); border:1px solid var(--border2); border-radius:5px; padding:14px 12px; }
+.stat-val { font-family:'Rajdhani',sans-serif; font-size:30px; font-weight:700; color:var(--white); line-height:1; }
+.stat-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px; }
+.stat-change { font-size:10px; margin-top:6px; }
+
+/* GAS CARDS */
+.gas-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.gas-card { background:var(--bg2); border:1px solid var(--border2); border-radius:5px; padding:12px; }
+.gas-name { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px; }
+.gas-val { font-family:'Rajdhani',sans-serif; font-size:32px; font-weight:700; color:var(--white); line-height:1; }
+.gas-unit { font-size:10px; color:var(--muted); }
+.gas-tag { display:inline-block; font-size:9px; font-weight:700; padding:2px 8px; border-radius:20px; margin-top:6px; text-transform:uppercase; }
+.t-ok { background:rgba(39,174,96,0.2); color:var(--green2); border:1px solid rgba(39,174,96,0.4); }
+.t-warn { background:rgba(243,156,18,0.2); color:var(--yellow2); border:1px solid rgba(243,156,18,0.4); }
+.t-danger { background:rgba(231,76,60,0.2); color:var(--red); border:1px solid rgba(231,76,60,0.4); }
+.b-ok { border-color:var(--green)!important; }
+.b-warn { border-color:var(--yellow)!important; }
+.b-danger { border-color:var(--red)!important; }
+.gas-bar { height:3px; background:var(--bg3); border-radius:2px; margin-top:8px; overflow:hidden; }
+.gas-fill { height:100%; border-radius:2px; transition:width 0.6s; }
+.f-ok { background:var(--green2); }
+.f-warn { background:var(--yellow2); }
+.f-danger { background:var(--red); }
+
+/* TABLE */
+.table { width:100%; border-collapse:collapse; font-size:12px; }
+.table th { background:var(--bg3); color:var(--muted); font-size:10px; letter-spacing:0.8px; text-transform:uppercase; padding:8px 10px; text-align:left; font-weight:600; }
+.table td { padding:8px 10px; color:var(--light); border-bottom:1px solid var(--bg3); }
+.table tr:hover td { background:rgba(255,255,255,0.03); }
+.td-badge { display:inline-block; font-size:9px; font-weight:700; padding:2px 8px; border-radius:20px; text-transform:uppercase; }
+
+/* ZONE CARD */
+.zone-card { background:var(--bg2); border:1px solid var(--border2); border-radius:5px; padding:14px; margin-bottom:8px; }
+.zone-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.zone-name { font-family:'Rajdhani',sans-serif; font-size:14px; color:var(--white); font-weight:600; }
+.zone-sub { font-size:10px; color:var(--muted); margin-top:1px; }
+.z-badge { font-size:9px; font-weight:700; padding:3px 10px; border-radius:20px; text-transform:uppercase; }
+.zb-on { background:rgba(39,174,96,0.2); color:var(--green2); border:1px solid var(--green); }
+.zb-off { background:rgba(80,80,80,0.3); color:var(--muted); border:1px solid var(--border); }
+.zb-auto { background:rgba(74,144,217,0.2); color:#7EC8FF; border:1px solid var(--blue); }
+.zone-controls { display:flex; gap:6px; align-items:center; }
+.zc-btn {
+  padding:5px 16px; border-radius:3px; border:none; cursor:pointer;
+  font-family:'Rajdhani',sans-serif; font-size:12px; font-weight:700; transition:all 0.15s;
+}
+.zc-on { background:var(--green); color:white; }
+.zc-off { background:var(--bg3); color:var(--muted); border:1px solid var(--border2); }
+.zc-auto { background:var(--blue2); color:white; }
+.spd { display:flex; align-items:center; gap:8px; margin-top:10px; }
+.spd-lbl { font-size:10px; color:var(--muted); min-width:55px; }
+input[type=range] { -webkit-appearance:none; flex:1; height:3px; background:var(--bg3); border-radius:2px; outline:none; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:12px; height:12px; border-radius:50%; background:var(--blue); cursor:pointer; }
+.spd-val { font-family:'Rajdhani',sans-serif; font-size:13px; color:var(--white); min-width:36px; text-align:right; }
+
+/* SWITCH */
+.sw-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--bg3); }
+.sw-row:last-child { border-bottom:none; }
+.sw-lbl { font-size:12px; color:var(--light); }
+.sw-sub { font-size:10px; color:var(--muted); }
+.toggle { position:relative; width:36px; height:19px; flex-shrink:0; }
+.toggle input { opacity:0; width:0; height:0; }
+.sl { position:absolute; inset:0; background:var(--bg3); border-radius:20px; cursor:pointer; transition:0.3s; border:1px solid var(--border2); }
+.sl:before { content:''; position:absolute; width:13px; height:13px; border-radius:50%; background:var(--muted); top:2px; left:2px; transition:0.3s; }
+.toggle input:checked + .sl { background:var(--green); border-color:var(--green2); }
+.toggle input:checked + .sl:before { transform:translateX(17px); background:white; }
+
+/* EFF BAR */
+.eff-bar { height:6px; background:var(--bg3); border-radius:3px; overflow:hidden; margin-top:4px; }
+.eff-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--blue2),var(--blue)); }
+
+/* CHART CANVAS */
+.chart-wrap { background:var(--bg2); border:1px solid var(--border2); border-radius:5px; padding:14px 12px 10px; margin-bottom:14px; }
+.chart-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+.chip-row { display:flex; gap:4px; }
+.chip { padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; cursor:pointer; border:1px solid var(--border2); background:var(--bg3); color:var(--muted); transition:all 0.15s; }
+.chip.active { background:var(--blue2); color:var(--white); border-color:var(--blue); }
+
+/* ALERT LOG */
+.al-row { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px solid var(--bg3); }
+.al-row:last-child { border-bottom:none; }
+.al-dot { width:8px; height:8px; border-radius:50%; margin-top:4px; flex-shrink:0; }
+.al-msg { font-size:12px; color:var(--light); line-height:1.4; }
+.al-meta { font-size:10px; color:var(--muted); margin-top:2px; }
+
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200; align-items:center; justify-content:center; }
+.modal-overlay.active { display:flex; }
+.modal { background:var(--bg2); border:1px solid var(--blue); border-radius:6px; padding:22px; width:380px; position:relative; }
+.modal h3 { font-family:'Rajdhani',sans-serif; font-size:18px; color:var(--white); margin-bottom:4px; }
+.modal p { font-size:12px; color:var(--light); line-height:1.6; margin-bottom:14px; }
+.modal-close { position:absolute; top:10px; right:12px; background:none; border:none; color:var(--muted); font-size:16px; cursor:pointer; }
+.modal-close:hover { color:var(--white); }
+
+/* DIVIDER & VARIANTS */
+.divider { height:1px; background:var(--border2); margin:12px 0; }
+.up { color:var(--red); } .dn { color:var(--green2); } .neu { color:var(--muted); }
+
+canvas { display:block; width:100%!important; }
+</style>
+</head>
+<body>
+
+<div class="window">
+
+  <!-- TITLE BAR -->
+  <div class="titlebar">
+    <div class="titlebar-left">
+      <span class="t-icon">⛑️</span>
+      <span>MINER CLC — Sistema de Gestión Minera v1.0</span>
+    </div>
+    <div class="titlebar-right">
+      <button class="win-btn">─</button>
+      <button class="win-btn">□</button>
+      <button class="win-btn close">✕</button>
+    </div>
+  </div>
+
+  <!-- MENU BAR -->
+  <div class="menubar">
+    <div class="menu-item">Archivo</div>
+    <div class="menu-item">Ver</div>
+    <div class="menu-item">Herramientas</div>
+    <div class="menu-item">Reportes</div>
+    <div class="menu-item">Ayuda</div>
+  </div>
+
+  <!-- LOGIN (initial screen) -->
+  <div id="sc-login" style="flex:1;display:flex;background:var(--bg);overflow:hidden">
+    <div class="login-wrap" style="flex:1">
+      <div class="login-box">
+        <div class="login-logo">
+          <div class="li">⛑️</div>
+          <h2>MINER CLC</h2>
+          <p>Sistema de Gestión Minera — Ingresa tus credenciales</p>
+        </div>
+        <div class="fg"><label>Usuario / Identificación</label><input type="text" placeholder="Ingresa tu usuario"></div>
+        <div class="fg"><label>Contraseña</label><input type="password" placeholder="••••••••"></div>
+        <button class="login-btn" onclick="enterApp()">ACCEDER AL SISTEMA</button>
+        <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted)">
+          <a href="#" style="color:var(--blue)">¿Olvidaste tu contraseña?</a> &nbsp;·&nbsp;
+          <a href="#" style="color:var(--blue)" onclick="goTo('sc-register');return false">Crear usuario</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP (hidden until login) -->
+  <div id="sc-app" style="display:none;flex:1;overflow:hidden" class="main-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">⛑️</div>
+        <div><div class="logo-text">MINER CLC</div><div class="logo-sub">GESTIÓN MINERA</div></div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-label">Principal</div>
+        <div class="nav-item active" id="ni-dash" onclick="goTo('sc-dash')"><span class="ni">🏠</span> Dashboard</div>
+        <div class="nav-item" id="ni-gases" onclick="goTo('sc-gases')"><span class="ni">📊</span> Monitoreo Gases</div>
+        <div class="nav-item" id="ni-vent" onclick="goTo('sc-vent')"><span class="ni">💨</span> Ventilación</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label">Gestión</div>
+        <div class="nav-item" id="ni-alerts" onclick="goTo('sc-alerts')"><span class="ni">🚨</span> Alertas <span class="badge">3</span></div>
+        <div class="nav-item" id="ni-users" onclick="goTo('sc-users')"><span class="ni">👥</span> Usuarios</div>
+        <div class="nav-item" id="ni-reports" onclick="goTo('sc-reports')"><span class="ni">📋</span> Reportes</div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <div class="user-card">
+          <div class="user-av">👤</div>
+          <div><div class="user-name">Carlos Minero</div><div class="user-role">Administrador</div></div>
+          <button class="logout-btn" onclick="logout()" title="Cerrar sesión">⏻</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="content-header">
+        <div>
+          <h1 id="page-title">Dashboard</h1>
+          <div class="sub" id="page-sub">Panel general del sistema</div>
+        </div>
+        <div class="header-actions" id="header-actions">
+          <span style="font-size:11px;color:var(--muted)" id="live-time">--:--:--</span>
+          <button class="hbtn hbtn-red" onclick="showModal()">🚨 Alerta Emergencia</button>
+        </div>
+      </div>
+
+      <div class="content-body">
+
+        <!-- DASHBOARD -->
+        <div class="screen active" id="sc-dash">
+          <div class="grid4">
+            <div class="stat-card"><div class="stat-val" style="color:var(--green2)" id="d-zones">3</div><div class="stat-lbl">Zonas Activas</div><div class="stat-change" style="color:var(--green2)">▲ Sistema operativo</div></div>
+            <div class="stat-card"><div class="stat-val" style="color:var(--yellow2)" id="d-alerts-n">3</div><div class="stat-lbl">Alertas Pendientes</div><div class="stat-change" style="color:var(--yellow2)">⚠ Requieren atención</div></div>
+            <div class="stat-card"><div class="stat-val" id="d-co" style="color:var(--yellow2)">18</div><div class="stat-lbl">CO (ppm)</div><div class="stat-change" style="color:var(--yellow2)">▲ Precaución &gt;15ppm</div></div>
+            <div class="stat-card"><div class="stat-val" style="color:var(--green2)" id="d-o2">20.8</div><div class="stat-lbl">O₂ (%)</div><div class="stat-change" style="color:var(--green2)">✓ Nivel normal</div></div>
+          </div>
+
+          <div class="grid2">
+            <div class="card">
+              <div class="card-title">📈 Historial CO — Últimas 12h</div>
+              <canvas id="dashChart" height="120"></canvas>
+            </div>
+            <div class="card">
+              <div class="card-title">🔔 Alertas Recientes</div>
+              <div class="al-row"><div class="al-dot" style="background:var(--red)"></div><div><div class="al-msg">⚠️ CO supera umbral en Zona Sur — 34 ppm</div><div class="al-meta">Hace 12 min · Zona Sur Nivel 2</div></div></div>
+              <div class="al-row"><div class="al-dot" style="background:var(--yellow2)"></div><div><div class="al-msg">Ventilación Zona Este reducida al 40%</div><div class="al-meta">Hace 28 min · Zona Este Nivel 3</div></div></div>
+              <div class="al-row"><div class="al-dot" style="background:var(--green2)"></div><div><div class="al-msg">✅ O₂ normalizado en Nivel 3</div><div class="al-meta">Hace 45 min · Zona Norte</div></div></div>
+              <div class="al-row"><div class="al-dot" style="background:var(--yellow2)"></div><div><div class="al-msg">Temperatura elevada Zona Central — 31°C</div><div class="al-meta">Hace 1h · Zona Central Nivel 2</div></div></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">⚡ Estado de Zonas</div>
+            <table class="table">
+              <thead><tr><th>Zona</th><th>Ventilador</th><th>Estado</th><th>Velocidad</th><th>CO (ppm)</th><th>O₂ (%)</th><th>Temp (°C)</th></tr></thead>
+              <tbody>
+                <tr><td>Norte — Nivel 1</td><td>V-01</td><td><span class="td-badge t-ok">ENCENDIDO</span></td><td>75%</td><td>12</td><td>20.9</td><td>23</td></tr>
+                <tr><td>Sur — Nivel 2</td><td>V-02</td><td><span class="td-badge t-ok">ENCENDIDO</span></td><td>90%</td><td>34</td><td style="color:var(--yellow2)">20.1</td><td>26</td></tr>
+                <tr><td>Este — Nivel 3</td><td>V-03</td><td><span class="td-badge t-warn">AUTO</span></td><td>40%</td><td>18</td><td>20.7</td><td>24</td></tr>
+                <tr><td>Oeste — Nivel 1</td><td>V-04</td><td><span class="td-badge" style="background:rgba(80,80,80,0.3);color:var(--muted);border:1px solid var(--border)">APAGADO</span></td><td>0%</td><td>—</td><td>—</td><td>—</td></tr>
+                <tr><td>Central — Nivel 2</td><td>V-05</td><td><span class="td-badge t-ok">ENCENDIDO</span></td><td>60%</td><td>15</td><td>20.8</td><td>31</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- GAS MONITORING -->
+        <div class="screen" id="sc-gases">
+          <div class="gas-grid">
+            <div class="gas-card b-warn" id="gc-co"><div class="gas-name">CO — Monóxido de Carbono</div><div class="gas-val" id="gv-co">18</div><div class="gas-unit">ppm · límite 25ppm</div><span class="gas-tag t-warn" id="gt-co">PRECAUCIÓN</span><div class="gas-bar"><div class="gas-fill f-warn" id="gf-co" style="width:36%"></div></div></div>
+            <div class="gas-card b-ok" id="gc-o2"><div class="gas-name">O₂ — Oxígeno</div><div class="gas-val" id="gv-o2">20.8</div><div class="gas-unit">% · normal 20.9%</div><span class="gas-tag t-ok" id="gt-o2">NORMAL</span><div class="gas-bar"><div class="gas-fill f-ok" id="gf-o2" style="width:83%"></div></div></div>
+            <div class="gas-card b-ok" id="gc-co2"><div class="gas-name">CO₂ — Dióxido de Carbono</div><div class="gas-val" id="gv-co2">0.04</div><div class="gas-unit">% · límite 0.5%</div><span class="gas-tag t-ok" id="gt-co2">NORMAL</span><div class="gas-bar"><div class="gas-fill f-ok" id="gf-co2" style="width:4%"></div></div></div>
+            <div class="gas-card b-ok" id="gc-ch4"><div class="gas-name">CH₄ — Metano</div><div class="gas-val" id="gv-ch4">0.8</div><div class="gas-unit">%LEL · límite 2%LEL</div><span class="gas-tag t-ok" id="gt-ch4">NORMAL</span><div class="gas-bar"><div class="gas-fill f-ok" id="gf-ch4" style="width:8%"></div></div></div>
+            <div class="gas-card b-ok" id="gc-h2s"><div class="gas-name">H₂S — Sulfuro de Hidrógeno</div><div class="gas-val" id="gv-h2s">2</div><div class="gas-unit">ppm · límite 10ppm</div><span class="gas-tag t-ok" id="gt-h2s">NORMAL</span><div class="gas-bar"><div class="gas-fill f-ok" id="gf-h2s" style="width:10%"></div></div></div>
+            <div class="gas-card b-ok" id="gc-temp"><div class="gas-name">Temperatura Ambiente</div><div class="gas-val" id="gv-temp">24</div><div class="gas-unit">°C · límite 38°C</div><span class="gas-tag t-ok" id="gt-temp">NORMAL</span><div class="gas-bar"><div class="gas-fill f-ok" id="gf-temp" style="width:48%"></div></div></div>
+          </div>
+
+          <div class="chart-wrap">
+            <div class="chart-header">
+              <div class="card-title" style="margin:0">📈 Gráfica Histórica en Tiempo Real</div>
+              <div class="chip-row">
+                <div class="chip active" onclick="selC('CO')" id="chip-CO">CO</div>
+                <div class="chip" onclick="selC('O2')" id="chip-O2">O₂</div>
+                <div class="chip" onclick="selC('CH4')" id="chip-CH4">CH₄</div>
+                <div class="chip" onclick="selC('TEMP')" id="chip-TEMP">TEMP</div>
+              </div>
+            </div>
+            <canvas id="gasChart" height="130"></canvas>
+            <div id="chart-lbl" style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px">CO (ppm) — Últimas 12 horas</div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">🕐 Registro de Mediciones — CO</div>
+            <table class="table">
+              <thead><tr><th>Hora</th><th>CO (ppm)</th><th>Variación</th><th>Estado</th><th>Zona</th></tr></thead>
+              <tbody id="gas-table">
+                <tr><td>14:00</td><td>18</td><td class="neu">—</td><td><span class="td-badge t-warn">PRECAUCIÓN</span></td><td>Todas</td></tr>
+                <tr><td>13:00</td><td>23</td><td class="up">▲ 5</td><td><span class="td-badge t-warn">PRECAUCIÓN</span></td><td>Zona Sur</td></tr>
+                <tr><td>12:00</td><td>20</td><td class="up">▲ 3</td><td><span class="td-badge t-warn">PRECAUCIÓN</span></td><td>Zona Sur</td></tr>
+                <tr><td>11:00</td><td>17</td><td class="dn">▼ 3</td><td><span class="td-badge t-ok">NORMAL</span></td><td>Todas</td></tr>
+                <tr><td>10:00</td><td>19</td><td class="up">▲ 2</td><td><span class="td-badge t-warn">PRECAUCIÓN</span></td><td>Zona Este</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- VENTILATION -->
+        <div class="screen" id="sc-vent">
+          <div class="grid3" style="margin-bottom:14px">
+            <div class="stat-card"><div class="stat-val" style="color:var(--green2)">87%</div><div class="stat-lbl">Eficiencia Global</div><div class="eff-bar"><div class="eff-fill" style="width:87%"></div></div></div>
+            <div class="stat-card"><div class="stat-val">3/5</div><div class="stat-lbl">Zonas Encendidas</div></div>
+            <div class="stat-card"><div class="stat-val" style="color:var(--blue)">2,840</div><div class="stat-lbl">m³/h Flujo Total</div></div>
+          </div>
+
+          <div class="grid2">
+            <div>
+              <div class="zone-card">
+                <div class="zone-head"><div><div class="zone-name">⛏️ Zona Norte — Nivel 1</div><div class="zone-sub">Ventilador V-01 · 3 sensores activos</div></div><span class="z-badge zb-on" id="bz-norte">ENCENDIDO</span></div>
+                <div class="zone-controls"><button class="zc-btn zc-on" onclick="sz('norte','on')">ON</button><button class="zc-btn zc-off" onclick="sz('norte','off')">OFF</button><button class="zc-btn zc-auto" onclick="sz('norte','auto')">AUTO</button></div>
+                <div class="spd"><span class="spd-lbl">Velocidad</span><input type="range" min="0" max="100" value="75" oninput="us(this,'sv-norte')"><span class="spd-val" id="sv-norte">75%</span></div>
+              </div>
+              <div class="zone-card">
+                <div class="zone-head"><div><div class="zone-name">⛏️ Zona Sur — Nivel 2</div><div class="zone-sub">Ventilador V-02 · 4 sensores activos</div></div><span class="z-badge zb-on" id="bz-sur">ENCENDIDO</span></div>
+                <div class="zone-controls"><button class="zc-btn zc-on" onclick="sz('sur','on')">ON</button><button class="zc-btn zc-off" onclick="sz('sur','off')">OFF</button><button class="zc-btn zc-auto" onclick="sz('sur','auto')">AUTO</button></div>
+                <div class="spd"><span class="spd-lbl">Velocidad</span><input type="range" min="0" max="100" value="90" oninput="us(this,'sv-sur')"><span class="spd-val" id="sv-sur">90%</span></div>
+              </div>
+              <div class="zone-card">
+                <div class="zone-head"><div><div class="zone-name">⛏️ Zona Este — Nivel 3</div><div class="zone-sub">Ventilador V-03 · 2 sensores activos</div></div><span class="z-badge zb-auto" id="bz-este">AUTO</span></div>
+                <div class="zone-controls"><button class="zc-btn zc-on" onclick="sz('este','on')">ON</button><button class="zc-btn zc-off" onclick="sz('este','off')">OFF</button><button class="zc-btn zc-auto" onclick="sz('este','auto')">AUTO</button></div>
+                <div class="spd"><span class="spd-lbl">Velocidad</span><input type="range" min="0" max="100" value="40" oninput="us(this,'sv-este')"><span class="spd-val" id="sv-este">40%</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="zone-card">
+                <div class="zone-head"><div><div class="zone-name">⛏️ Zona Oeste — Nivel 1</div><div class="zone-sub">Ventilador V-04 · en mantenimiento</div></div><span class="z-badge zb-off" id="bz-oeste">APAGADO</span></div>
+                <div class="zone-controls"><button class="zc-btn zc-on" onclick="sz('oeste','on')">ON</button><button class="zc-btn zc-off" onclick="sz('oeste','off')">OFF</button><button class="zc-btn zc-auto" onclick="sz('oeste','auto')">AUTO</button></div>
+                <div class="spd"><span class="spd-lbl">Velocidad</span><input type="range" min="0" max="100" value="0" oninput="us(this,'sv-oeste')"><span class="spd-val" id="sv-oeste">0%</span></div>
+              </div>
+              <div class="zone-card">
+                <div class="zone-head"><div><div class="zone-name">⛏️ Zona Central — Nivel 2</div><div class="zone-sub">Ventilador V-05 · 3 sensores activos</div></div><span class="z-badge zb-on" id="bz-central">ENCENDIDO</span></div>
+                <div class="zone-controls"><button class="zc-btn zc-on" onclick="sz('central','on')">ON</button><button class="zc-btn zc-off" onclick="sz('central','off')">OFF</button><button class="zc-btn zc-auto" onclick="sz('central','auto')">AUTO</button></div>
+                <div class="spd"><span class="spd-lbl">Velocidad</span><input type="range" min="0" max="100" value="60" oninput="us(this,'sv-central')"><span class="spd-val" id="sv-central">60%</span></div>
+              </div>
+              <div class="card">
+                <div class="card-title">⚙️ Configuración Automática</div>
+                <div class="sw-row"><div><div class="sw-lbl">Modo Automático Global</div><div class="sw-sub">Ajuste por sensores en tiempo real</div></div><label class="toggle"><input type="checkbox" checked><span class="sl"></span></label></div>
+                <div class="sw-row"><div><div class="sw-lbl">Alarma por CO elevado</div><div class="sw-sub">Activa ventilación si CO &gt; 25ppm</div></div><label class="toggle"><input type="checkbox" checked><span class="sl"></span></label></div>
+                <div class="sw-row"><div><div class="sw-lbl">Activación por O₂ bajo</div><div class="sw-sub">Activa si O₂ &lt; 19.5%</div></div><label class="toggle"><input type="checkbox" checked><span class="sl"></span></label></div>
+                <div class="sw-row"><div><div class="sw-lbl">Notificaciones de mantenimiento</div><div class="sw-sub">Alerta cada 500h de operación</div></div><label class="toggle"><input type="checkbox"><span class="sl"></span></label></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ALERTS -->
+        <div class="screen" id="sc-alerts">
+          <div class="card" style="margin-bottom:12px">
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="text" placeholder="Buscar alertas..." style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:7px 12px;color:var(--white);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+              <select style="background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:7px 10px;color:var(--light);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+                <option>Todos los tipos</option>
+                <option>Gas</option>
+                <option>Ventilación</option>
+                <option>Emergencia</option>
+              </select>
+              <button class="hbtn hbtn-red" onclick="showModal()">+ Nueva Alerta</button>
+            </div>
+          </div>
+          <div class="card">
+            <table class="table">
+              <thead><tr><th>Tipo</th><th>Mensaje</th><th>Zona</th><th>Fecha/Hora</th><th>Estado</th><th>Acción</th></tr></thead>
+              <tbody>
+                <tr><td><span class="td-badge t-danger">GAS</span></td><td>CO supera umbral — 34 ppm</td><td>Sur Nivel 2</td><td>Hoy 14:12</td><td><span class="td-badge t-warn">PENDIENTE</span></td><td><button class="hbtn hbtn-dark" style="font-size:10px;padding:3px 10px">Resolver</button></td></tr>
+                <tr><td><span class="td-badge t-warn">VENTIL.</span></td><td>Velocidad reducida al 40%</td><td>Este Nivel 3</td><td>Hoy 13:56</td><td><span class="td-badge t-warn">PENDIENTE</span></td><td><button class="hbtn hbtn-dark" style="font-size:10px;padding:3px 10px">Resolver</button></td></tr>
+                <tr><td><span class="td-badge t-warn">TEMP</span></td><td>Temperatura elevada — 31°C</td><td>Central Nivel 2</td><td>Hoy 13:30</td><td><span class="td-badge t-warn">PENDIENTE</span></td><td><button class="hbtn hbtn-dark" style="font-size:10px;padding:3px 10px">Resolver</button></td></tr>
+                <tr><td><span class="td-badge t-ok">GAS</span></td><td>O₂ normalizado</td><td>Norte Nivel 1</td><td>Hoy 13:15</td><td><span class="td-badge t-ok">RESUELTA</span></td><td><button class="hbtn hbtn-dark" style="font-size:10px;padding:3px 10px">Ver detalle</button></td></tr>
+                <tr><td><span class="td-badge t-danger">EMERG.</span></td><td>Protocolo de evacuación activado</td><td>Zona Sur</td><td>Ayer 22:10</td><td><span class="td-badge t-ok">RESUELTA</span></td><td><button class="hbtn hbtn-dark" style="font-size:10px;padding:3px 10px">Ver detalle</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- USERS -->
+        <div class="screen" id="sc-users">
+          <div class="card" style="margin-bottom:12px">
+            <div style="display:flex;gap:8px;align-items:center">
+              <input type="text" placeholder="Buscar usuarios..." style="flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:7px 12px;color:var(--white);font-family:'Exo 2',sans-serif;font-size:12px;outline:none">
+              <button class="hbtn hbtn-blue">+ Nuevo Usuario</button>
+            </div>
+          </div>
+          <div class="card">
+            <table class="table">
+              <thead><tr><th>Nombre</th><th>Identificación</th><th>Edad</th><th>Zona</th><th>Rol</th><th>Registrado</th></tr></thead>
+              <tbody>
+                <tr><td>Carlos Minero</td><td>CC-10234567</td><td>34</td><td>Norte — Nivel 1</td><td><span class="td-badge t-ok">ADMIN</span></td><td>01/01/2024</td></tr>
+                <tr><td>Juan Pérez</td><td>CC-20345678</td><td>28</td><td>Sur — Nivel 2</td><td><span class="td-badge t-warn">MINERO</span></td><td>15/02/2024</td></tr>
+                <tr><td>Ana Gómez</td><td>CC-30456789</td><td>31</td><td>Este — Nivel 3</td><td><span class="td-badge t-warn">MINERO</span></td><td>20/03/2024</td></tr>
+                <tr><td>Pedro López</td><td>CC-40567890</td><td>45</td><td>Central — Nivel 2</td><td><span class="td-badge" style="background:rgba(74,144,217,0.2);color:#7EC8FF;border:1px solid var(--blue)">SUPERVISOR</span></td><td>10/04/2024</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- REPORTS -->
+        <div class="screen" id="sc-reports">
+          <div class="grid3">
+            <div class="card" style="text-align:center;cursor:pointer" onclick="alert('Generando reporte PDF...')">
+              <div style="font-size:32px;margin-bottom:8px">📄</div>
+              <div class="card-title" style="text-align:center">Reporte de Gases</div>
+              <div style="font-size:11px;color:var(--muted)">Exportar historial completo de mediciones en PDF</div>
+              <button class="hbtn hbtn-blue" style="margin-top:12px;width:100%">Generar PDF</button>
+            </div>
+            <div class="card" style="text-align:center;cursor:pointer">
+              <div style="font-size:32px;margin-bottom:8px">📊</div>
+              <div class="card-title" style="text-align:center">Reporte Ventilación</div>
+              <div style="font-size:11px;color:var(--muted)">Historial de operación de ventiladores por zona</div>
+              <button class="hbtn hbtn-blue" style="margin-top:12px;width:100%">Generar PDF</button>
+            </div>
+            <div class="card" style="text-align:center;cursor:pointer">
+              <div style="font-size:32px;margin-bottom:8px">🚨</div>
+              <div class="card-title" style="text-align:center">Reporte de Alertas</div>
+              <div style="font-size:11px;color:var(--muted)">Registro completo de incidentes y resoluciones</div>
+              <button class="hbtn hbtn-blue" style="margin-top:12px;width:100%">Generar PDF</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- content-body -->
+    </div><!-- content -->
+  </div><!-- main-layout -->
+
+  <!-- STATUS BAR -->
+  <div class="statusbar">
+    <div class="status-item"><div class="status-dot" style="background:var(--green2)"></div>PostgreSQL: Conectado</div>
+    <div class="status-item"><div class="status-dot" style="background:var(--green2)"></div>Sensores: Activos (5/6)</div>
+    <div class="status-item"><div class="status-dot" style="background:var(--yellow2)"></div>Alertas pendientes: 3</div>
+    <div class="status-item" style="margin-left:auto" id="sb-time">--:--:--</div>
+  </div>
+
+</div><!-- window -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3>🚨 Nueva Alerta de Emergencia</h3>
+    <div class="divider"></div>
+    <div class="fg"><label>Tipo de Alerta</label>
+      <select style="width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:3px;padding:8px 12px;color:var(--white);font-family:'Exo 2',sans-serif;font-size:13px;outline:none">
+        <option>GAS — Concentración peligrosa</option>
+        <option>VENTILACIÓN — Fallo de sistema</option>
+        <option>EMERGENCIA — Evacuación</option>
+        <option>MANTENIMIENTO — Revisión requerida</option>
+      </select>
+    </div>
+    <div class="fg"><label>Zona</label><input type="text" placeholder="Ej: Zona Sur — Nivel 2"></div>
+    <div class="fg"><label>Mensaje</label><input type="text" placeholder="Descripción de la alerta..."></div>
+    <button class="hbtn hbtn-red" style="width:100%;padding:10px;font-size:15px;margin-top:4px" onclick="closeModal()">🚨 ENVIAR ALERTA</button>
+    <button class="hbtn hbtn-dark" style="width:100%;padding:8px;margin-top:6px" onclick="closeModal()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+// ===== NAV =====
+const PAGES = {
+  'sc-dash':    { title:'Dashboard', sub:'Panel general del sistema' },
+  'sc-gases':   { title:'Monitoreo de Gases', sub:'Lecturas en tiempo real de sensores' },
+  'sc-vent':    { title:'Ventilación Mecánica', sub:'Control y eficiencia del sistema' },
+  'sc-alerts':  { title:'Gestión de Alertas', sub:'Registro e historial de incidentes' },
+  'sc-users':   { title:'Usuarios del Sistema', sub:'Administración de personal' },
+  'sc-reports': { title:'Reportes', sub:'Generación y exportación de informes' }
+};
+const NAV_MAP = {
+  'sc-dash':'ni-dash','sc-gases':'ni-gases','sc-vent':'ni-vent',
+  'sc-alerts':'ni-alerts','sc-users':'ni-users','sc-reports':'ni-reports'
+};
+
+function enterApp() {
+  document.getElementById('sc-login').style.display = 'none';
+  document.getElementById('sc-app').style.display = 'flex';
+  goTo('sc-dash');
+}
+
+function logout() {
+  document.getElementById('sc-app').style.display = 'none';
+  document.getElementById('sc-login').style.display = 'flex';
+}
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (NAV_MAP[id]) document.getElementById(NAV_MAP[id]).classList.add('active');
+  if (PAGES[id]) {
+    document.getElementById('page-title').textContent = PAGES[id].title;
+    document.getElementById('page-sub').textContent = PAGES[id].sub;
+  }
+  if (id === 'sc-gases') setTimeout(() => drawChart(curChart), 50);
+  if (id === 'sc-dash') setTimeout(() => drawDashChart(), 50);
+}
+
+// ===== MODAL =====
+function showModal() { document.getElementById('modal').classList.add('active'); }
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+// ===== VENTILATION =====
+function sz(zone, mode) {
+  const b = document.getElementById('bz-' + zone);
+  if (mode==='on')   { b.textContent='ENCENDIDO'; b.className='z-badge zb-on'; }
+  else if(mode==='off') { b.textContent='APAGADO';   b.className='z-badge zb-off'; }
+  else               { b.textContent='AUTO';      b.className='z-badge zb-auto'; }
+}
+function us(el, id) { document.getElementById(id).textContent = el.value + '%'; }
+
+// ===== GAS DATA =====
+const GD = {
+  CO:   { vals:[12,15,14,18,22,19,17,20,25,23,18,18], lbl:'CO (ppm)', max:50, warn:15, danger:25 },
+  O2:   { vals:[20.9,20.8,20.7,20.5,20.6,20.8,20.7,20.9,20.8,20.7,20.8,20.8], lbl:'O₂ (%)', max:22, warn:0, danger:0 },
+  CH4:  { vals:[0.5,0.6,0.7,0.8,0.9,0.7,0.6,0.8,1.2,0.9,0.8,0.8], lbl:'CH₄ (%LEL)', max:5, warn:1, danger:2 },
+  TEMP: { vals:[22,23,24,24,25,25,24,24,23,24,24,24], lbl:'Temperatura (°C)', max:45, warn:30, danger:38 }
+};
+let curChart = 'CO';
+
+function selC(g) {
+  curChart = g;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('chip-' + g).classList.add('active');
+  drawChart(g);
+}
+
+function drawChartBase(canvas, pts, warn, danger, lbl, isInt) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 600; const H = parseInt(canvas.getAttribute('height')) || 130;
+  canvas.width = W; canvas.height = H;
+  ctx.clearRect(0,0,W,H);
+  const minV = Math.min(...pts)*0.9, maxV = Math.max(...pts)*1.12;
+  const pL=36,pR=12,pT=12,pB=22;
+  const gW=W-pL-pR, gH=H-pT-pB;
+  const tx=i=>pL+(i/(pts.length-1))*gW;
+  const ty=v=>pT+gH-((v-minV)/(maxV-minV))*gH;
+  const lbls=['12h','11h','10h','9h','8h','7h','6h','5h','4h','3h','2h','1h'];
+  // grid
+  ctx.strokeStyle='#3A3A3A'; ctx.lineWidth=1;
+  for(let i=0;i<=4;i++){
+    const y=pT+(i/4)*gH;
+    ctx.beginPath(); ctx.moveTo(pL,y); ctx.lineTo(pL+gW,y); ctx.stroke();
+    const v=maxV-(i/4)*(maxV-minV);
+    ctx.fillStyle='#888'; ctx.font='9px Exo 2'; ctx.textAlign='right';
+    ctx.fillText(v.toFixed(isInt?0:1), pL-3, y+3);
+  }
+  // warn line
+  if(warn>0&&warn>minV&&warn<maxV){
+    const wy=ty(warn);
+    ctx.strokeStyle='#F39C12'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.moveTo(pL,wy); ctx.lineTo(pL+gW,wy); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  // fill
+  const gr=ctx.createLinearGradient(0,pT,0,pT+gH);
+  gr.addColorStop(0,'rgba(74,144,217,0.3)'); gr.addColorStop(1,'rgba(74,144,217,0.02)');
+  ctx.beginPath();
+  pts.forEach((v,i)=>i===0?ctx.moveTo(tx(i),ty(v)):ctx.lineTo(tx(i),ty(v)));
+  ctx.lineTo(tx(pts.length-1),pT+gH); ctx.lineTo(tx(0),pT+gH); ctx.closePath();
+  ctx.fillStyle=gr; ctx.fill();
+  // line
+  ctx.strokeStyle='#4A90D9'; ctx.lineWidth=2; ctx.setLineDash([]);
+  ctx.beginPath();
+  pts.forEach((v,i)=>i===0?ctx.moveTo(tx(i),ty(v)):ctx.lineTo(tx(i),ty(v)));
+  ctx.stroke();
+  // dots
+  pts.forEach((v,i)=>{
+    const isLast=i===pts.length-1, isH=danger>0&&v>=danger;
+    ctx.beginPath(); ctx.arc(tx(i),ty(v),isLast?5:3,0,Math.PI*2);
+    ctx.fillStyle=isH?'#E74C3C':isLast?'#7EC8FF':'#4A90D9'; ctx.fill();
+    if(isLast){ ctx.font='bold 11px Rajdhani'; ctx.fillStyle='#FFF'; ctx.textAlign='center'; ctx.fillText(v+'',tx(i),ty(v)-9); }
+  });
+  [0,3,6,9,11].forEach(i=>{ ctx.fillStyle='#888'; ctx.font='9px Exo 2'; ctx.textAlign='center'; ctx.fillText(lbls[i],tx(i),H-5); });
+}
+
+function drawChart(g) {
+  const d=GD[g], c=document.getElementById('gasChart');
+  drawChartBase(c, d.vals, d.warn, d.danger, d.lbl, g==='CO'||g==='TEMP');
+  document.getElementById('chart-lbl').textContent = d.lbl + ' — Últimas 12 horas';
+}
+
+function drawDashChart() {
+  const c=document.getElementById('dashChart');
+  drawChartBase(c, GD.CO.vals, 15, 25, 'CO', true);
+}
+
+// ===== GAS SIM =====
+function fluc(v,r){ return +(v+(Math.random()-0.5)*r).toFixed(2); }
+
+function simulate(){
+  let co=Math.max(0,Math.min(50,fluc(parseFloat(document.getElementById('gv-co').textContent),5)));
+  setGas('co',co.toFixed(0),co,50,15,25);
+  GD.CO.vals.push(+co.toFixed(0)); GD.CO.vals.shift();
+
+  let o2=Math.max(18,Math.min(22,fluc(parseFloat(document.getElementById('gv-o2').textContent),0.12)));
+  const o2l=o2<19.5?'danger':o2<20?'warn':'ok';
+  setGasRaw('o2',o2.toFixed(1),(o2/22)*100,o2l);
+  GD.O2.vals.push(+o2.toFixed(1)); GD.O2.vals.shift();
+
+  let ch4=Math.max(0,Math.min(5,fluc(parseFloat(document.getElementById('gv-ch4').textContent),0.3)));
+  setGas('ch4',ch4.toFixed(1),ch4,5,1,2);
+  GD.CH4.vals.push(+ch4.toFixed(1)); GD.CH4.vals.shift();
+
+  let h2s=Math.max(0,Math.min(20,fluc(parseFloat(document.getElementById('gv-h2s').textContent)||2,1.5)));
+  setGas('h2s',h2s.toFixed(0),h2s,20,5,10);
+
+  let tmp=Math.max(15,Math.min(45,fluc(parseFloat(document.getElementById('gv-temp').textContent)||24,0.6)));
+  setGasRaw('temp',tmp.toFixed(0),(tmp/45)*100,tmp>38?'danger':tmp>30?'warn':'ok');
+  GD.TEMP.vals.push(+tmp.toFixed(0)); GD.TEMP.vals.shift();
+
+  let co2=Math.max(0.03,Math.min(1,fluc(parseFloat(document.getElementById('gv-co2').textContent)||0.04,0.01)));
+  setGas('co2',co2.toFixed(2),co2,1,0.5,0.8);
+
+  document.getElementById('d-co').textContent = co.toFixed(0);
+  document.getElementById('d-co').style.color = co>25?'var(--red)':co>15?'var(--yellow2)':'var(--green2)';
+  document.getElementById('d-o2').textContent = o2.toFixed(1);
+
+  const activeScreen = document.querySelector('.screen.active');
+  if(activeScreen && activeScreen.id==='sc-gases') drawChart(curChart);
+  if(activeScreen && activeScreen.id==='sc-dash') drawDashChart();
+}
+
+function setGas(id,disp,val,max,warn,danger){
+  const pct=Math.min(100,(val/max)*100);
+  const lvl=danger>0&&val>=danger?'danger':warn>0&&val>=warn?'warn':'ok';
+  setGasRaw(id,disp,pct,lvl);
+}
+function setGasRaw(id,disp,pct,lvl){
+  document.getElementById('gv-'+id).textContent=disp;
+  document.getElementById('gf-'+id).style.width=Math.min(100,pct)+'%';
+  document.getElementById('gf-'+id).className='gas-fill f-'+lvl;
+  document.getElementById('gc-'+id).className='gas-card b-'+lvl;
+  const lb={ok:'NORMAL',warn:'PRECAUCIÓN',danger:'PELIGRO'};
+  document.getElementById('gt-'+id).textContent=lb[lvl];
+  document.getElementById('gt-'+id).className='gas-tag t-'+lvl;
+}
+
+// ===== CLOCK =====
+function updateClock(){
+  const t=new Date().toLocaleTimeString('es-CO',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  document.getElementById('live-time').textContent=t;
+  document.getElementById('sb-time').textContent=new Date().toLocaleString('es-CO',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+
+// ===== INIT =====
+window.onload = function(){
+  updateClock(); setInterval(updateClock,1000);
+  setTimeout(simulate,1500); setInterval(simulate,3000);
+};
+</script>
+</body>
+</html>
