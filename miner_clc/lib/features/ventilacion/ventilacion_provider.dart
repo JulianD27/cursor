@@ -37,17 +37,43 @@ class VentilacionProvider extends ChangeNotifier {
   }
 
   Future<void> setMode(String zone, VentMode mode) async {
-    final current = _states.where((s) => s.zone == zone).toList();
-    final speed = current.isEmpty ? 0 : current.first.speed;
-    await _db.setVentilation(zone: zone, mode: mode, speed: speed);
-    await load();
+    _setLoading(true);
+    _error = null;
+    notifyListeners();
+    try {
+      final current = _states.where((s) => s.zone == zone).toList();
+      int speed = current.isEmpty ? 0 : current.first.speed;
+      
+      // Si se enciende y la velocidad estaba en 0, ponerla en 100 por defecto para que ventile.
+      if (mode == VentMode.on && speed == 0) {
+        speed = 100;
+      }
+      
+      await _db.setVentilation(zone: zone, mode: mode, speed: speed);
+      await load();
+    } catch (e) {
+      _error = 'Error actualizando ventilación: $e';
+      notifyListeners();
+    } finally {
+      _setLoading(false);
+    }
   }
 
   Future<void> setSpeed(String zone, int speed) async {
-    final current = _states.where((s) => s.zone == zone).toList();
-    final mode = current.isEmpty ? VentMode.auto : current.first.mode;
-    await _db.setVentilation(zone: zone, mode: mode, speed: speed);
-    await load();
+    _setLoading(true);
+    _error = null;
+    notifyListeners();
+    try {
+      final current = _states.where((s) => s.zone == zone).toList();
+      final mode = current.isEmpty ? VentMode.auto : current.first.mode;
+      await _db.setVentilation(zone: zone, mode: mode, speed: speed);
+      await load();
+    } catch (e) {
+      _error = 'Error ajustando velocidad: $e';
+      notifyListeners();
+    } finally {
+      _setLoading(false);
+    }
   }
 
   void startPolling({Duration interval = const Duration(seconds: 2)}) {

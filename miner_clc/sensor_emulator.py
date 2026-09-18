@@ -14,7 +14,8 @@ Requisitos:
     pip install psycopg2-binary colorama
 """
 
-import time, random, threading
+import time, random, threading, sys, json, os, urllib.request
+if hasattr(sys.stdout, 'reconfigure'): sys.stdout.reconfigure(encoding='utf-8')
 import psycopg2
 from datetime import datetime
 from colorama import Fore, Style, init
@@ -30,6 +31,16 @@ ZONAS = [
     "Norte - Nivel 1", "Sur - Nivel 2", "Este - Nivel 3",
     "Oeste - Nivel 1", "Central - Nivel 2",
 ]
+
+ZONA_IDS = {
+    "Norte - Nivel 1": 1,
+    "Sur - Nivel 2": 2,
+    "Este - Nivel 3": 3,
+    "Oeste - Nivel 1": 4,
+    "Central - Nivel 2": 5,
+}
+
+ID_TO_ZONA = {v: k for k, v in ZONA_IDS.items()}
 
 # ── UMBRALES ──────────────────────────────────
 # (warn, danger)
@@ -76,12 +87,16 @@ def conectar():
 def leer_ventilacion(conn):
     try:
         cur = conn.cursor()
-        cur.execute("SELECT zona, estado, velocidad, modo FROM ventilacion")
+        cur.execute("SELECT zona_id, estado, velocidad, modo FROM ventilacion")
         rows = cur.fetchall()
         cur.close()
         return {
-            z: {"estado": e or "off", "velocidad": int(v or 0), "modo": m or "manual"}
-            for z, e, v, m in rows
+            ID_TO_ZONA[z_id]: {
+                "estado": (e or "off").lower().strip(),
+                "velocidad": int(v or 0),
+                "modo": (m or "manual").lower().strip()
+            }
+            for z_id, e, v, m in rows if z_id in ID_TO_ZONA
         }
     except Exception as e:
         print(Fore.RED + f"⚠️ Error leyendo ventilación: {e}")
@@ -196,9 +211,9 @@ def insertar(conn, zona, v, est):
         cur = conn.cursor()
         cur.execute("""
             INSERT INTO lecturas_gases
-              (zona,co,o2,co2,ch4,h2s,temperatura,estado,registrado_en)
+              (zona_id,co,o2,co2,ch4,h2s,temperatura,estado,registrado_en)
             VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
-        """, (zona,v["co"],v["o2"],v["co2"],v["ch4"],
+        """, (ZONA_IDS[zona],v["co"],v["o2"],v["co2"],v["ch4"],
               v["h2s"],v["temperatura"],est,datetime.now()))
         conn.commit(); cur.close()
         return True
@@ -207,6 +222,40 @@ def insertar(conn, zona, v, est):
         try: conn.rollback()
         except: pass
         return False
+
+def despachar_alerta_movil(zona, msgs, est):
+    cfg_path = "notification_settings.json"
+    if not os.path.exists(cfg_path): return
+    try:
+        with open(cfg_path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+        if not cfg.get("autoAlertOnDanger", True): return
+        token = cfg.get("telegramBotToken", "").strip()
+        chat_id = cfg.get("telegramChatId", "").strip()
+        if not (cfg.get("telegramEnabled") and token and chat_id): return
+
+        text = (
+            f"🚨 *¡ALERTA CRÍTICA DE MINA - MINER CLC!* 🚨\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"📍 *Zona:* `{zona}`\n"
+            f"⚡ *Nivel:* *{est.upper()}*\n"
+            f"💨 *Gases Críticos:* `{', '.join(msgs)}`\n"
+            f"⏰ *Hora:* `{datetime.now().strftime('%H:%M:%S')}`\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"🚨 *Acción:* EVACUAR PERSONAL y activar ventilación forzada al 100%."
+        )
+
+        url = f"https://api.telegram.org/bot{token}/sendMessage"
+        req = urllib.request.Request(
+            url,
+            data=json.dumps({"chat_id": chat_id, "text": text, "parse_mode": "Markdown"}).encode("utf-8"),
+            headers={"Content-Type": "application/json"}
+        )
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            pass
+        print(Fore.GREEN + f"  📲 [PUSH CELULAR] Alerta de {zona} enviada al smartphone.")
+    except Exception as e:
+        pass
 
 def alerta(conn, zona, v, est):
     if est not in ("warn","danger"): return
@@ -225,12 +274,14 @@ def alerta(conn, zona, v, est):
     try:
         cur = conn.cursor()
         cur.execute("""
-            INSERT INTO alertas (mensaje,tipo,zona,resuelta)
+            INSERT INTO alertas (mensaje,tipo,zona_id,resuelta)
             VALUES (%s,%s,%s,FALSE)
-        """, (" | ".join(msgs), est, zona))
+        """, (" | ".join(msgs), est, ZONA_IDS[zona]))
         conn.commit(); cur.close()
         c = Fore.RED if est=="danger" else Fore.YELLOW
         print(c+f"  🚨 ALERTA [{zona}]: {' | '.join(msgs)}")
+        if est == "danger":
+            threading.Thread(target=despachar_alerta_movil, args=(zona, msgs, est), daemon=True).start()
     except Exception as e:
         print(Fore.RED+f"❌ alerta: {e}")
         try: conn.rollback()

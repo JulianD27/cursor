@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -5,6 +8,7 @@ import '../../shared/theme.dart';
 import '../alertas/alertas_provider.dart';
 import '../auth/auth_provider.dart';
 import 'dashboard_provider.dart';
+import 'widgets/interactive_mine_map.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -61,96 +65,150 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     crossAxisCount: twoCols ? 2 : 1,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 12,
-                    childAspectRatio: twoCols ? 2.2 : 1.8,
+                    childAspectRatio: twoCols ? 1.6 : 1.35,
                     children: [
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Row(
-                            children: [
-                              const CircleAvatar(
-                                radius: 26,
-                                backgroundColor: MinerColors.button,
-                                child: Icon(Icons.person, size: 28, color: MinerColors.text),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: MinerColors.card,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: MinerColors.border),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                            )
+                          ]
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          children: [
+                            // Encabezado del carnet
+                            Container(
+                              height: 24,
+                              width: double.infinity,
+                              color: MinerColors.accent,
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'CREDENCIAL DE IDENTIFICACIÓN • MINER CLC',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.2,
+                                ),
                               ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
                                   children: [
-                                    Text(
-                                      auth.displayName ?? (auth.userId ?? 'Usuario'),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w800,
-                                        color: MinerColors.text,
+                                    // Foto rectangular de carnet
+                                    GestureDetector(
+                                      onTap: () async {
+                                        try {
+                                          final result = await FilePicker.platform.pickFiles(type: FileType.image);
+                                          if (result != null && result.files.single.path != null) {
+                                            auth.setLocalPhoto(result.files.single.path);
+                                          }
+                                        } catch (e) {
+                                          // Ignorar
+                                        }
+                                      },
+                                      child: Container(
+                                        width: 70,
+                                        height: 90,
+                                        decoration: BoxDecoration(
+                                          color: MinerColors.button,
+                                          borderRadius: BorderRadius.circular(6),
+                                          border: Border.all(color: MinerColors.border),
+                                          image: auth.localPhotoPath != null
+                                              ? DecorationImage(
+                                                  image: FileImage(File(auth.localPhotoPath!)),
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : null,
+                                        ),
+                                        child: auth.localPhotoPath == null
+                                            ? const Center(child: Icon(Icons.add_a_photo, color: MinerColors.textWithAlpha, size: 24))
+                                            : null,
                                       ),
                                     ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      auth.email ?? 'Correo no registrado',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        color: MinerColors.text.withValues(alpha: 0.75),
-                                        fontSize: 12,
+                                    const SizedBox(width: 16),
+                                    // Datos del trabajador
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            auth.displayName ?? (auth.userId ?? 'Usuario'),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w900,
+                                              color: MinerColors.text,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                            decoration: BoxDecoration(
+                                              color: MinerColors.accent.withValues(alpha: 0.15),
+                                              borderRadius: BorderRadius.circular(4),
+                                              border: Border.all(color: MinerColors.accent.withValues(alpha: 0.4)),
+                                            ),
+                                            child: Text(
+                                              auth.role.toUpperCase(),
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w800,
+                                                color: MinerColors.accent,
+                                                letterSpacing: 1.0,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              const Text('ID: ', style: TextStyle(fontSize: 10, color: MinerColors.textWithAlpha, fontWeight: FontWeight.bold)),
+                                              Expanded(child: Text(auth.document?.isNotEmpty == true ? auth.document! : '—', style: const TextStyle(fontSize: 11, color: MinerColors.text), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Row(
+                                            children: [
+                                              const Text('EMAIL: ', style: TextStyle(fontSize: 10, color: MinerColors.textWithAlpha, fontWeight: FontWeight.bold)),
+                                              Expanded(child: Text(auth.email ?? '—', style: const TextStyle(fontSize: 11, color: MinerColors.text), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      auth.document == null || auth.document!.isEmpty
-                                          ? 'Documento: —'
-                                          : 'Documento: ${auth.document}',
-                                      style: TextStyle(
-                                        color: MinerColors.text.withValues(alpha: 0.75),
-                                        fontSize: 12,
+                                    // Código QR falso decorativo
+                                    Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
-                                    ),
+                                      child: const Icon(Icons.qr_code_2, size: 40, color: Colors.black),
+                                    )
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                       Card(
                         child: Padding(
-                          padding: const EdgeInsets.all(14),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Zonas activas',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w800,
-                                  color: MinerColors.text,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Wrap(
-                                spacing: 8,
-                                runSpacing: 8,
-                                children: [
-                                  for (final z in (summary?.activeZones ?? const <String>[]))
-                                    Chip(
-                                      label: Text(z),
-                                      backgroundColor: MinerColors.sidebar,
-                                      labelStyle: const TextStyle(color: MinerColors.text),
-                                      side: const BorderSide(color: MinerColors.border),
-                                    ),
-                                  if ((summary?.activeZones ?? const <String>[]).isEmpty)
-                                    Text(
-                                      'Sin zonas detectadas',
-                                      style: TextStyle(
-                                        color: MinerColors.text.withValues(alpha: 0.75),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ],
+                          padding: const EdgeInsets.all(12),
+                          child: InteractiveMineMap(
+                            latestReadings: summary?.latestReadings ?? const [],
                           ),
                         ),
                       ),

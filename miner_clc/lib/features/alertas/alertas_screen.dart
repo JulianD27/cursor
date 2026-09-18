@@ -101,6 +101,17 @@ class _AlertasScreenState extends State<AlertasScreen> {
         );
   }
 
+  String _formatDateTime(DateTime? dt) {
+    if (dt == null) return '—';
+    final y = dt.year.toString().padLeft(4, '0');
+    final m = dt.month.toString().padLeft(2, '0');
+    final d = dt.day.toString().padLeft(2, '0');
+    final hh = dt.hour.toString().padLeft(2, '0');
+    final mm = dt.minute.toString().padLeft(2, '0');
+    final ss = dt.second.toString().padLeft(2, '0');
+    return '$y-$m-$d $hh:$mm:$ss';
+  }
+
   @override
   Widget build(BuildContext context) {
     final p = context.watch<AlertasProvider>();
@@ -117,7 +128,7 @@ class _AlertasScreenState extends State<AlertasScreen> {
             children: [
               const Expanded(
                 child: Text(
-                  'Alertas',
+                  'Gestión de Alertas',
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
@@ -125,14 +136,19 @@ class _AlertasScreenState extends State<AlertasScreen> {
                   ),
                 ),
               ),
+              const SizedBox(width: 12),
               SizedBox(
                 width: 220,
                 child: DropdownButtonFormField<String>(
-                  key: ValueKey('filter-zone-${f.zone ?? 'all'}'),
+                  key: ValueKey('zone-${f.zone}'),
                   initialValue: f.zone,
                   items: [
                     const DropdownMenuItem(value: null, child: Text('Todas las zonas')),
-                    for (final z in zones) DropdownMenuItem(value: z, child: Text(z)),
+                    for (final z in zones)
+                      DropdownMenuItem(
+                        value: z,
+                        child: Text(z),
+                      ),
                   ],
                   onChanged: (v) => p.setFilters(f.copyWith(zone: v, clearZone: v == null)),
                   decoration: const InputDecoration(labelText: 'Zona'),
@@ -140,9 +156,9 @@ class _AlertasScreenState extends State<AlertasScreen> {
               ),
               const SizedBox(width: 12),
               SizedBox(
-                width: 220,
+                width: 170,
                 child: DropdownButtonFormField<bool?>(
-                  key: ValueKey('filter-resolved-${f.resolved?.toString() ?? 'all'}'),
+                  key: ValueKey('res-${f.resolved}'),
                   initialValue: f.resolved,
                   items: const [
                     DropdownMenuItem(value: null, child: Text('Todas')),
@@ -184,13 +200,13 @@ class _AlertasScreenState extends State<AlertasScreen> {
                   columnSpacing: 14,
                   minWidth: 900,
                   columns: const [
-                    DataColumn(label: Text('ID')),
-                    DataColumn(label: Text('Zona')),
-                    DataColumn(label: Text('Nivel')),
-                    DataColumn(label: Text('Mensaje')),
-                    DataColumn(label: Text('Fecha')),
-                    DataColumn(label: Text('Estado')),
-                    DataColumn(label: Text('Acciones')),
+                    DataColumn2(label: Text('ID'), fixedWidth: 55),
+                    DataColumn2(label: Text('Zona'), size: ColumnSize.S),
+                    DataColumn2(label: Text('Nivel'), fixedWidth: 85),
+                    DataColumn2(label: Text('Mensaje'), size: ColumnSize.L),
+                    DataColumn2(label: Text('Fecha'), fixedWidth: 175),
+                    DataColumn2(label: Text('Estado'), fixedWidth: 100),
+                    DataColumn2(label: Text('Acciones'), fixedWidth: 155),
                   ],
                   rows: [
                     for (final a in p.alerts)
@@ -199,15 +215,34 @@ class _AlertasScreenState extends State<AlertasScreen> {
                           DataCell(Text(a.id)),
                           DataCell(Text(a.zone)),
                           DataCell(
-                            Text(
-                              a.level,
-                              style: TextStyle(
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
                                 color: a.level.toLowerCase().contains('danger')
-                                    ? MinerColors.danger
+                                    ? MinerColors.danger.withValues(alpha: 0.15)
                                     : (a.level.toLowerCase().contains('warn')
-                                        ? MinerColors.warn
-                                        : MinerColors.accent),
-                                fontWeight: FontWeight.w700,
+                                        ? MinerColors.warn.withValues(alpha: 0.15)
+                                        : MinerColors.accent.withValues(alpha: 0.15)),
+                                borderRadius: BorderRadius.circular(6),
+                                border: Border.all(
+                                  color: a.level.toLowerCase().contains('danger')
+                                      ? MinerColors.danger.withValues(alpha: 0.4)
+                                      : (a.level.toLowerCase().contains('warn')
+                                          ? MinerColors.warn.withValues(alpha: 0.4)
+                                          : MinerColors.accent.withValues(alpha: 0.4)),
+                                ),
+                              ),
+                              child: Text(
+                                a.level.toUpperCase(),
+                                style: TextStyle(
+                                  color: a.level.toLowerCase().contains('danger')
+                                      ? MinerColors.danger
+                                      : (a.level.toLowerCase().contains('warn')
+                                          ? MinerColors.warn
+                                          : MinerColors.accent),
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 11,
+                                ),
                               ),
                             ),
                           ),
@@ -221,7 +256,7 @@ class _AlertasScreenState extends State<AlertasScreen> {
                               ),
                             ),
                           ),
-                          DataCell(Text(a.createdAt.toString())),
+                          DataCell(Text(_formatDateTime(a.createdAt))),
                           DataCell(
                             Text(
                               a.resolved ? 'Resuelta' : 'Pendiente',
@@ -232,22 +267,40 @@ class _AlertasScreenState extends State<AlertasScreen> {
                             ),
                           ),
                           DataCell(
-                            Row(
-                              children: [
-                                if (!a.resolved)
-                                  ElevatedButton(
+                            !a.resolved
+                                ? ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                      visualDensity: VisualDensity.compact,
+                                    ),
                                     onPressed: () => p.resolve(a.id),
-                                    child: const Text('Marcar resuelta'),
+                                    child: const Text('Marcar resuelta', style: TextStyle(fontSize: 12)),
                                   )
-                                else
-                                  Text(
-                                    a.resolvedAt == null ? '—' : a.resolvedAt.toString(),
-                                    style: TextStyle(
-                                      color: MinerColors.text.withValues(alpha: 0.75),
+                                : Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: MinerColors.ok.withValues(alpha: 0.12),
+                                      borderRadius: BorderRadius.circular(6),
+                                      border: Border.all(color: MinerColors.ok.withValues(alpha: 0.35)),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Icon(Icons.check_circle_rounded, size: 14, color: MinerColors.ok),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          a.resolvedAt != null
+                                              ? '${a.resolvedAt!.hour.toString().padLeft(2, '0')}:${a.resolvedAt!.minute.toString().padLeft(2, '0')}:${a.resolvedAt!.second.toString().padLeft(2, '0')}'
+                                              : 'Atendida',
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w700,
+                                            color: MinerColors.ok,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                              ],
-                            ),
                           ),
                         ],
                       ),

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 
 import '../../db/database_service.dart';
 import '../../db/models.dart';
+import '../../services/alert_notification_service.dart';
 
 class AlertasFilters {
   const AlertasFilters({this.zone, this.resolved});
@@ -64,6 +65,19 @@ class AlertasProvider extends ChangeNotifier {
     try {
       await _db.createAlert(zone: zone, message: message, level: level);
       await load();
+
+      // Auto-despacho de notificación al celular del ingeniero (Telegram / Twilio)
+      if (level.toLowerCase().contains('danger') ||
+          level.toLowerCase().contains('peligro') ||
+          level.toLowerCase().contains('warn')) {
+        unawaited(AlertNotificationService().evaluateAndDispatchEmergency(
+          zone: zone,
+          gas: 'Protocolo de Seguridad',
+          value: 1.0,
+          level: level,
+          message: message,
+        ));
+      }
     } catch (e) {
       _error = 'Error creando alerta: $e';
       notifyListeners();

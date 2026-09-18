@@ -18,8 +18,8 @@ class WindowController {
   static Future<void> showLoginWindow() async {
     if (kIsWeb) return;
     await windowManager.setMinimumSize(const Size(400, 500));
-    await windowManager.setSize(const Size(400, 500));
-    await windowManager.center();
+    await windowManager.maximize();
+    await windowManager.setFullScreen(false);
     await windowManager.show();
     await windowManager.focus();
   }
@@ -27,8 +27,8 @@ class WindowController {
   static Future<void> showMainWindow() async {
     if (kIsWeb) return;
     await windowManager.setMinimumSize(const Size(1024, 768));
-    await windowManager.setSize(const Size(1200, 800));
-    await windowManager.center();
+    await windowManager.maximize();
+    await windowManager.setFullScreen(false);
     await windowManager.show();
     await windowManager.focus();
   }

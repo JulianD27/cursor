@@ -7,6 +7,8 @@ import '../gases/gases_screen.dart';
 import '../ventilacion/ventilacion_screen.dart';
 import '../alertas/alertas_screen.dart';
 import '../configuracion/configuracion_screen.dart';
+import '../chatbot/chatbot_dialog.dart';
+import '../chatbot/chatbot_screen.dart';
 
 const _sidebarBg = Color(0xFF1A1A1A);
 const _topbarBg  = Color(0xFF1E1E1E);
@@ -30,6 +32,7 @@ const _navItems = [
   _NavItem('Monitoreo de Gases', Icons.monitor_heart_outlined),
   _NavItem('Ventilación',        Icons.air_outlined),
   _NavItem('Alertas',            Icons.notifications_outlined),
+  _NavItem('Asistente IA',       Icons.smart_toy_outlined),
 ];
 
 class SidebarShell extends StatefulWidget {
@@ -46,7 +49,8 @@ class _SidebarShellState extends State<SidebarShell> {
     GasesScreen(),
     VentilacionScreen(),
     AlertasScreen(),
-    ConfiguracionScreen(), // índice 4
+    ChatbotScreen(),       // índice 4
+    ConfiguracionScreen(), // índice 5
   ];
 
   @override
@@ -54,12 +58,24 @@ class _SidebarShellState extends State<SidebarShell> {
     final auth = context.watch<AuthProvider>();
     return Scaffold(
       backgroundColor: _mainBg,
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: const Color(0xFF2E5B88),
+        foregroundColor: Colors.white,
+        elevation: 6,
+        icon: const Icon(Icons.smart_toy_outlined, color: Colors.white),
+        label: const Text(
+          'Asistente IA',
+          style: TextStyle(fontFamily: 'Rajdhani', fontWeight: FontWeight.bold, letterSpacing: 0.8),
+        ),
+        onPressed: () => ChatbotDialog.show(context),
+        tooltip: 'Abrir Asistente Inteligente MINER CLC',
+      ),
       body: Row(
         children: [
           _Sidebar(
             selectedIndex: _selectedIndex,
             userName: auth.displayName ?? auth.username ?? 'Usuario',
-            userRole: auth.userId != null ? 'Usuario: ${auth.userId}' : 'Minero',
+            userRole: auth.authProvider == 'google' ? 'Google Verificado' : (auth.userId != null ? 'Usuario: ${auth.userId}' : 'Minero'),
             onNavTap: (i) => setState(() => _selectedIndex = i),
             onLogout: () => auth.logout(),
           ),
@@ -70,6 +86,7 @@ class _SidebarShellState extends State<SidebarShell> {
                   title: _selectedIndex < _navItems.length
                       ? _navItems[_selectedIndex].label
                       : 'Configuración',
+                  onOpenChatbot: () => ChatbotDialog.show(context),
                 ),
                 Expanded(child: _screens[_selectedIndex]),
               ],
@@ -176,7 +193,7 @@ class _Sidebar extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.settings_outlined,
                       size: 16, color: _muted),
-                  onPressed: () => onNavTap(4),
+                  onPressed: () => onNavTap(5),
                   tooltip: 'Ver / editar perfil',
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -211,12 +228,12 @@ class _Sidebar extends StatelessWidget {
                 const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Column(
               children: [
-                // Configuración como ítem navegable (índice 4)
+                // Configuración como ítem navegable (índice 5)
                 _NavRow(
                   icon: Icons.manage_accounts_outlined,
                   label: 'Configuración',
-                  isActive: selectedIndex == 4,
-                  onTap: () => onNavTap(4),
+                  isActive: selectedIndex == 5,
+                  onTap: () => onNavTap(5),
                   color: _muted,
                 ),
                 const SizedBox(height: 2),
@@ -330,7 +347,8 @@ class _NavRow extends StatelessWidget {
 // ─────────────────────────────────────────────
 class _Topbar extends StatelessWidget {
   final String title;
-  const _Topbar({required this.title});
+  final VoidCallback? onOpenChatbot;
+  const _Topbar({required this.title, this.onOpenChatbot});
 
   @override
   Widget build(BuildContext context) {
@@ -356,6 +374,23 @@ class _Topbar extends StatelessWidget {
             ),
           ),
           const Spacer(),
+          if (onOpenChatbot != null) ...[
+            OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: const Color(0xFF4A90D9),
+                side: const BorderSide(color: Color(0xFF4A90D9), width: 1),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+              onPressed: onOpenChatbot,
+              icon: const Icon(Icons.smart_toy_outlined, size: 16),
+              label: const Text(
+                'Asistente IA',
+                style: TextStyle(fontFamily: 'Rajdhani', fontWeight: FontWeight.w700, fontSize: 13),
+              ),
+            ),
+            const SizedBox(width: 14),
+          ],
           Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 10, vertical: 4),

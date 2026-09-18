@@ -75,11 +75,14 @@ class _VentilacionScreenState extends State<VentilacionScreen> {
             ],
           ),
           const SizedBox(height: 10),
-          if (p.error != null)
+          if (p.isLoading) const LinearProgressIndicator(minHeight: 4),
+          if (p.error != null) ...[
+            const SizedBox(height: 10),
             Text(
               p.error!,
               style: const TextStyle(color: MinerColors.danger),
             ),
+          ],
           const SizedBox(height: 10),
           Expanded(
             child: GridView.builder(
@@ -110,17 +113,17 @@ class _VentilacionScreenState extends State<VentilacionScreen> {
                             _ModeButton(
                               label: 'ON',
                               selected: mode == VentMode.on,
-                              onTap: () => p.setMode(s.zone, VentMode.on),
+                              onTap: p.isLoading ? null : () => p.setMode(s.zone, VentMode.on),
                             ),
                             _ModeButton(
                               label: 'OFF',
                               selected: mode == VentMode.off,
-                              onTap: () => p.setMode(s.zone, VentMode.off),
+                              onTap: p.isLoading ? null : () => p.setMode(s.zone, VentMode.off),
                             ),
                             _ModeButton(
                               label: 'AUTO',
                               selected: mode == VentMode.auto,
-                              onTap: () => p.setMode(s.zone, VentMode.auto),
+                              onTap: p.isLoading ? null : () => p.setMode(s.zone, VentMode.auto),
                             ),
                           ],
                         ),
@@ -135,7 +138,7 @@ class _VentilacionScreenState extends State<VentilacionScreen> {
                                 max: 100,
                                 divisions: 20,
                                 activeColor: MinerColors.accent,
-                                onChanged: mode == VentMode.off
+                                onChanged: p.isLoading || mode == VentMode.off
                                     ? null
                                     : (v) => p.setSpeed(s.zone, v.round()),
                               ),
@@ -160,12 +163,12 @@ class _ModeButton extends StatelessWidget {
   const _ModeButton({
     required this.label,
     required this.selected,
-    required this.onTap,
+    this.onTap,
   });
 
   final String label;
   final bool selected;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
